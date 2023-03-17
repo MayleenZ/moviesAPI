@@ -1,32 +1,39 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+//hooks are functions
+import { getMovie } from "./services/omdbapi";
 import MovieDisplay from "./components/MovieDisplay";
 import Form from "./components/Form";
+import NavBar from "./components/NavBar";
+import AdditionalContentExample from "./components/Alerts";
 
 function App() {
   //Store the data of a movie
   const [movie, setMovie] = useState(null);
   //null is always a good way to initialize piece of state when not sure waht we are going to get back from the api
-  //
-  //fetch data from api, this is the function that is making the request to the API
-  const getMovie = async (searchTerm) => {
-    // async; special keyword to make an asynchronous function
-    const response = await fetch(`https://www.omdbapi.com/?apikey=20d49ef4&t=${searchTerm}`)
-      //The t is there to search for the movie title and the search wil be the user searchTerm they type in the input, we put it in backticks , having await is going to pause execution and wait for data and ocntinue as soon as the data comes back , await only works on function that are marked async (they always go together)
-      
-      // wait for this lne of code to complete
-      // * Fetch function needs url to fetch the data
-      const data = await response.json();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getMovie("Clueless");
+      // console.log(data);
       setMovie(data);
-      // First we get an object , we need to parse the data from the data to a JSON data so we can read it 
-      // This takes time so we need to do an await so that data will be converted to json that we can read and later iterate over or dispaly on UI
+      //returning it into state
     };
-    return (
+    fetchData();
+  }, []);
+  //if there are side effects best to do it with a useEffect
+  //The useEffect will tell react that your component needs to do this after rendering and react will remember the runction you passed (aka its "effect") and call after performing DOM updates. this will get rendered when you first render website and then you can call the rest of the api's with the bracket [] so it can help putting in an array.
+  //the side efffect of rendering clueless will happen after site is rendered
+
+  return (
     <div className="App">
-      <Form movieSearch={getMovie} />
+      <AdditionalContentExample />
+      <NavBar />
+      <Form movieSearch={getMovie} setMovie={setMovie} />
       {/* passing the getMovie to the form, we are prop drilling right now and passing the props to the form.js */}
+      {/* setMovie: passing down function to update the data into th state */}
       {/* <MovieDisplay movie={movie}/> */}
-      {movie && <MovieDisplay movie={movie} />}
+      <MovieDisplay movie={movie} />
     </div>
   );
 }
