@@ -7,6 +7,7 @@
 .MovieTitle {
   font-size: 50px;
   background-color: antiquewhite;
+  padding: 10px;
 }
 
 .MovieImg {
@@ -17,6 +18,8 @@
   background-color: antiquewhite;
 }
 
-.FormButton {
+Button {
   display: flex;
+  margin-top: 35px;
+  height: 2em;
 }
